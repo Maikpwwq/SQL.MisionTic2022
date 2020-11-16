@@ -1,0 +1,68 @@
+/* 
+NOTA IMPORTANTE:  Para ejecutar su código en la plataforma se tuvo es cuenta lo siguiente:
+Para concatenar no se puede usar '&', se usa '||'
+En vez de '*' se debe usar '%' para el WHERE LIKE '%valor%'
+Al final de todas las instrucciones se uso el comando LIMIT 100 por ejemplo
+SELECT * FROM client  
+LIMIT 100;
+*/
+
+/* 0 */
+SELECT Career 
+FROM Client
+GROUP BY Career
+ORDER BY Career ASC
+LIMIT 100;
+
+/* 1 */
+SELECT DISTINCT [Career], 
+COUNT (Career) as [Cantidad Clientes]
+FROM Client
+GROUP by [Career]
+ORDER BY [Cantidad Clientes] DESC, [Career] ASC
+LIMIT 100;
+
+/* 2 */
+SELECT [Card]
+FROM Card
+LEFT JOIN [ClientCard] 
+ON [Card].id = [ClientCard].idCard
+WHERE [ClientCard].idCard IS NULL
+GROUP BY [Card]
+LIMIT 100;
+ 
+/* 3 */
+SELECT [Account Status], COUNT(Client.idAccountStatus) AS [Cantidad Clientes]
+FROM AccountStatus
+INNER JOIN [Client] ON [AccountStatus].id = [Client].idAccountStatus
+GROUP BY [Account Status]
+ORDER BY [Account Status] ASC
+LIMIT 100;
+
+/* 4 */
+SELECT [First Name] || " " || [Last Name] AS [Nombre y Apellido]
+FROM Client
+INNER JOIN ClientCard ON [Client].id = [ClientCard].idClient
+WHERE ([ClientCard].idCard LIKE "%CC")
+GROUP BY [Nombre y Apellido]
+HAVING COUNT ([ClientCard].idCard) = 1
+ORDER BY [Nombre y Apellido] ASC
+LIMIT 100;
+
+/* 5 */
+SELECT [Hometown], ROUND( AVG (Client.Age), 2) AS [Promedio Edad]
+FROM Hometown 
+INNER JOIN Client ON [Hometown].idHometown = [Client].idHometown
+GROUP BY [Hometown]
+HAVING [Promedio Edad] > 40
+ORDER BY [Promedio Edad] DESC, [Hometown] ASC
+LIMIT 100;
+
+/* 6 */
+SELECT SUBSTR ([Client].mail, 1, INSTR ([Client].mail,"@") -1 ) AS [Direccion],
+UPPER( REPLACE ( SUBSTR ([Client].mail, INSTR ([Client].mail,"@")+ 1), '.com', '')) As [Dominio],
+[Hometown].Hometown
+FROM Client
+INNER JOIN [Hometown] ON [Client].idHometown = [Hometown].idHometown
+ORDER BY [Direccion] asc
+LIMIT 100;
